@@ -1,0 +1,22 @@
+---
+version: '3.5'
+services:
+  erlangpl:
+    build:
+      context: .
+    command: "/erlangpl/erlangpl -n ${APP_NAME}@127.0.0.1 -c COOKIE"
+    network_mode: container:${ERLANG_CONTAINER}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.erlangpl.entrypoints=http"
+      - "traefik.http.routers.erlangpl.rule=Host(`erlangpl.dev.localhost`)"
+      - "traefik.http.routers.erlangpl-secure.entrypoints=https"
+      - "traefik.http.routers.erlangpl-secure.rule=Host(`erlangpl.dev.localhost`)"
+      - "traefik.http.routers.erlangpl-secure.tls=true"
+      - "traefik.http.services.erlangpl.loadbalancer.server.port=37575"
+      - "traefik.docker.network=traefik"
+
+networks:
+  default:
+    external:
+      name: traefik
